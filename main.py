@@ -3,7 +3,7 @@ import EdgarScrape
 import XMLExtract
 import os
 import threading
-import Queue
+import queue
 import time
 import requests
 import sys
@@ -23,7 +23,7 @@ class ScrapeAndExtract:
 		
 		#Extract Section
 		self.extracted_keys = None
-		self.to_extract = Queue.Queue()
+		self.to_extract = queue.Queue()
 		
 		self.populate_symbol_keys()
 		self.get_all_keys()
@@ -37,9 +37,9 @@ class ScrapeAndExtract:
 	
 	def get_all_keys(self):
 		scraped_data_log = pickle.load(open(settings.SCRAPE_LOG_FILE_PATH, "rb"))
-		self.scraped_keys = scraped_data_log.keys()
+		self.scraped_keys = list(scraped_data_log.keys())
 		extracted_data_log = pickle.load(open(settings.EXTRACT_LOG_FILE_PATH, "rb"))
-		self.extracted_keys = extracted_data_log.keys()
+		self.extracted_keys = list(extracted_data_log.keys())
 		sk_set = set(self.scraped_keys)
 		ek_set = set(self.extracted_keys)
 		to_extract = list(sk_set - ek_set)
@@ -95,7 +95,7 @@ class ScrapeAndExtract:
 					logs.add_extract_data(symbol, ql, True)
 					pass
 				elif tmp_xe.data['error'] == True:
-					print('Error Extracting: {0}|{1}|{2}'.format(symbol, ql, '10-K'))
+					print(('Error Extracting: {0}|{1}|{2}'.format(symbol, ql, '10-K')))
 					logs.add_extract_data(symbol, ql, False)
 					pass
 			if settings.OUTPUT_JSON:
@@ -123,7 +123,7 @@ class ScrapeAndExtract:
 					logs.add_extract_data(symbol, kl, True)
 					pass
 				elif tmp_xe.data['error'] == True:
-					print('Error Extracting: {0}|{1}|{2}'.format(symbol, kl, '10-K'))
+					print(('Error Extracting: {0}|{1}|{2}'.format(symbol, kl, '10-K')))
 					logs.add_extract_data(symbol, kl, False)
 					pass
 			if settings.OUTPUT_JSON:
@@ -198,6 +198,7 @@ def run_main():
 
 if __name__ == '__main__':
 	run_main()
+
 
 
 

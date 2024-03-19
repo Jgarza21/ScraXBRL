@@ -3,7 +3,7 @@ import requests
 import LinkURL
 import re
 import os
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from bs4 import BeautifulSoup as BS
 
 class GetFilings:
@@ -35,7 +35,7 @@ class GetFilings:
 						'10-K': None
 					  }
 				}
-		print('Scraping {0}'.format(self.ticker_symbol))
+		print(('Scraping {0}'.format(self.ticker_symbol)))
 		print('Getting 10-Q list...')
 		self.get_10q_list()
 		print('Getting 10-K list...')
@@ -93,6 +93,7 @@ class GetFilings:
 		if self.validate_page(s):
 			return s
 		else:
+			print("Error")
 			return False
 
 	def get_10q_list(self):
@@ -105,6 +106,7 @@ class GetFilings:
 				doc_url = 'https://www.sec.gov' + link['href']
 				self.filings['10q_xl_list'].append(doc_url)
 		else:
+			print("Error")
 			return False
 
 
@@ -376,7 +378,7 @@ class GetFilings:
 				if not os.path.exists(diry):
 					os.makedirs(diry)
 				if not self.check_duplicate(diry, fname):
-					urllib.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
+					urllib.request.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
 					
 			for link in self.filings['10k_xml']:
 				fname = os.path.split(link[0])[1]
@@ -386,7 +388,7 @@ class GetFilings:
 				if not os.path.exists(diry):
 					os.makedirs(diry)
 				if not self.check_duplicate(diry, fname):
-					urllib.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
+					urllib.request.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
 		
 		#Download HTML files
 		if settings.GET_HTML:
@@ -396,7 +398,7 @@ class GetFilings:
 				if not os.path.exists(diry):
 					os.makedirs(diry)
 				if not self.check_duplicate(diry, fname):
-					urllib.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
+					urllib.request.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
 					
 			for link in self.filings['10k_html']:
 				fname = "{0}_{1}_{2}.html".format(self.ticker_symbol, link[1], link[2])
@@ -404,7 +406,7 @@ class GetFilings:
 				if not os.path.exists(diry):
 					os.makedirs(diry)
 				if not self.check_duplicate(diry, fname):
-					urllib.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
+					urllib.request.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
 
 		#Download TXT files
 		if settings.GET_TXT:
@@ -414,7 +416,7 @@ class GetFilings:
 				if not os.path.exists(diry):
 					os.makedirs(diry)
 				if not self.check_duplicate(diry, fname):
-					urllib.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
+					urllib.request.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
 
 			for link in self.filings['10k_txt']:
 				fname = "{0}_{1}_{2}.txt".format(self.ticker_symbol, link[1], link[2])
@@ -422,7 +424,7 @@ class GetFilings:
 				if not os.path.exists(diry):
 					os.makedirs(diry)
 				if not self.check_duplicate(diry, fname):
-					urllib.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
+					urllib.request.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
 
 		#Download XL files
 		if settings.GET_XL:
@@ -433,7 +435,7 @@ class GetFilings:
 				if not os.path.exists(diry):
 					os.makedirs(diry)
 				if not self.check_duplicate(diry, fname):
-					urllib.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
+					urllib.request.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
 					
 			for link in self.filings['10k_xl']:
 				fname = "{0}_{1}_{2}.xlsx".format(self.ticker_symbol, link[1], link[2])
@@ -442,4 +444,5 @@ class GetFilings:
 				if not os.path.exists(diry):
 					os.makedirs(diry)
 				if not self.check_duplicate(diry, fname):
-					urllib.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
+					urllib.request.urlretrieve(link[0], '{0}{1}'.format(diry, fname))
+

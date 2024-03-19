@@ -24,7 +24,7 @@ class DataView:
 	def get_all_roles(self, cat='pre'):
 		"""Returns list of all roles."""
 		
-		return self.data[cat]['roles'].keys()
+		return list(self.data[cat]['roles'].keys())
 	
 	def traverse_print_tree(self, base, role_keys, tabs=0):
 		"""Traverse cal tree and print."""
@@ -38,12 +38,12 @@ class DataView:
 			except KeyError:
 				lab_str = rk
 			try:
-				base_keys = base[rk]['val'].keys()
+				base_keys = list(base[rk]['val'].keys())
 				if len(base_keys) == 0:
 					if len(base[rk]['sub']) == 0:
 						continue
 					else:
-						print('\033[1m' + lab_str + '\033[0m')
+						print(('\033[1m' + lab_str + '\033[0m'))
 				else:
 					date_str = ''
 					val_str = ''
@@ -59,33 +59,33 @@ class DataView:
 							val_str += base[rk]['val'][bk].encode('utf-8')
 						val_str += '\t\t'
 					print(lab_str)
-					print(tab_str + '\t' + date_str)
-					print(tab_str + '\t' + val_str)
+					print((tab_str + '\t' + date_str))
+					print((tab_str + '\t' + val_str))
 			except KeyError:
 				pass
 			if len(base[rk]['sub']) > 0:
 				rk_base = base[rk]['sub']
-				rk_base_keys = rk_base.keys()
+				rk_base_keys = list(rk_base.keys())
 				self.traverse_print_tree(rk_base, rk_base_keys, tabs=tabs+1)
 				
 	def traverse_tree(self, name, cat='pre'):
 		base = self.data[cat]['roles'][name]
 		base_tree = base['tree']
-		role_keys = base_tree.keys()
+		role_keys = list(base_tree.keys())
 		self.traverse_print_tree(base_tree, role_keys)
 	
 	def traverse_all_trees(self):
 		base = self.data['pre']['roles']
-		base_keys = base.keys()
+		base_keys = list(base.keys())
 		for bk in base_keys:
-			print('\033[1m' + 'Title:' + ' ' + bk + '\033[0m')
+			print(('\033[1m' + 'Title:' + ' ' + bk + '\033[0m'))
 			self.traverse_tree(bk)
 			print('\n\n')
 				
 	def find_fact_in_role(self, fact, cat='pre'):
 		"""Returns list of roles with fact in them."""
 		
-		all_role_keys = self.data[cat]['roles'].keys()
+		all_role_keys = list(self.data[cat]['roles'].keys())
 		roles_with_fact = []
 		for i in all_role_keys:
 			base = self.data[cat]['roles'][i]['unique']
@@ -94,3 +94,4 @@ class DataView:
 					roles_with_fact.append(i)
 		roles_with_fact = list(set(roles_with_fact))
 		return roles_with_fact
+

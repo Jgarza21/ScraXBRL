@@ -37,7 +37,7 @@ class ExtractFilingData:
 					'ftype': None,
 				   }
 		
-		print("Extract contents from: {0}|{1}|{2}".format(self.ticker, self.date, self.ftype))
+		print(("Extract contents from: {0}|{1}|{2}".format(self.ticker, self.date, self.ftype)))
 		self.create_data_segments()
 		self.load_files()
 		if self.data['error'] == False:
@@ -194,31 +194,31 @@ class ExtractFilingData:
 				'documentperiodenddate', 'tradingsymbol', 'documenttype']
 		#Get Quarter
 		try:
-			val_q = self.data['ins']['facts']['dei'][names[0]]['val_by_date'].keys()[0]
+			val_q = list(self.data['ins']['facts']['dei'][names[0]]['val_by_date'].keys())[0]
 			self.format_data['quarter'] = self.data['ins']['facts']['dei'][names[0]]['val_by_date'][val_q][0][0].upper()
 		except KeyError:
 			self.format_data['quarter'] = 'NA'
 		#Get Year
 		try:
-			val_y = self.data['ins']['facts']['dei'][names[1]]['val_by_date'].keys()[0]
+			val_y = list(self.data['ins']['facts']['dei'][names[1]]['val_by_date'].keys())[0]
 			self.format_data['year'] = self.data['ins']['facts']['dei'][names[1]]['val_by_date'][val_y][0][0]
 		except KeyError:
 			self.format_data['year'] = self.xbrl_year
 		#Get Date
 		try:
-			val_d = self.data['ins']['facts']['dei'][names[2]]['val_by_date'].keys()[0]
+			val_d = list(self.data['ins']['facts']['dei'][names[2]]['val_by_date'].keys())[0]
 			self.format_data['date'] = self.data['ins']['facts']['dei'][names[2]]['val_by_date'][val_d][0][0]
 		except KeyError:
 			self.format_data['date'] = 'NA'
 		#Get Symbol
 		try:
-			val_s = self.data['ins']['facts']['dei'][names[3]]['val_by_date'].keys()[0]
+			val_s = list(self.data['ins']['facts']['dei'][names[3]]['val_by_date'].keys())[0]
 			self.format_data['symbol'] = self.data['ins']['facts']['dei'][names[3]]['val_by_date'][val_s][0][0].upper()
 		except (KeyError, IndexError):
 			self.format_data['symbol'] = self.ticker
 		#Get Filing Type
 		try:
-			val_f = self.data['ins']['facts']['dei'][names[4]]['val_by_date'].keys()[0]
+			val_f = list(self.data['ins']['facts']['dei'][names[4]]['val_by_date'].keys())[0]
 			self.format_data['ftype'] = self.data['ins']['facts']['dei'][names[4]]['val_by_date'][val_f][0][0].replace('/', '-')
 			self.format_data['ftype'] = self.format_data['ftype'].upper()
 		except KeyError:
@@ -265,15 +265,15 @@ class ExtractFilingData:
 
 		if try_str == float('nan'):
 			return False
-		key_ref = self.data['lab'].keys()
+		key_ref = list(self.data['lab'].keys())
 		key_lists = []
 		for kr in key_ref:
-			kl_cp = self.data['lab'][kr].keys()
+			kl_cp = list(self.data['lab'][kr].keys())
 			key_lists.append(kl_cp)
 		label_list = []
 		for key_num in range(len(key_ref)):
 			for i in key_lists[key_num]:
-				val_keys = self.data['lab'][key_ref[key_num]][i].keys()
+				val_keys = list(self.data['lab'][key_ref[key_num]][i].keys())
 				for num in val_keys:
 					if self.data['lab'][key_ref[key_num]][i][num] == try_str:
 						if get_full:
@@ -309,7 +309,7 @@ class ExtractFilingData:
 	def get_pfx_gen(self, html_string, ins):
 		"""Generic prefix extractor utilizing the instance dictionary."""
 		
-		ins_keys = self.data[ins]['facts'].keys()
+		ins_keys = list(self.data[ins]['facts'].keys())
 		html_string = str(html_string).lower()
 		pfx = None
 		for i in ins_keys:
@@ -324,7 +324,7 @@ class ExtractFilingData:
 		"""Generic name extractor utilizing the instance dictionary."""
 		
 		html_string = str(html_string)
-		ins_keys = self.data[ins]['facts'].keys()
+		ins_keys = list(self.data[ins]['facts'].keys())
 		tmp_str = html_string
 		while True:
 			pfx = re.search('([^\W_]|[-])*', tmp_str).group(0)
@@ -396,7 +396,7 @@ class ExtractFilingData:
 				if not self.check_path_exist(base_str + "['sub']"):
 					exec(base_str + '["sub"] = OrderedDict()')
 				if cat == 'pre' and ctx:
-					if isinstance(ctx, (unicode, str)):
+					if isinstance(ctx, str):
 						try:
 							try:
 								assign_str = base_str + '["label"] = "{0}"'.format(ctx.encode('utf-8'))
@@ -471,12 +471,12 @@ class ExtractFilingData:
 			except KeyError:
 				lab_str = rk
 			try:
-				base_keys = base[rk]['val'].keys()
+				base_keys = list(base[rk]['val'].keys())
 				if len(base_keys) == 0:
 					if len(base[rk]['sub']) == 0:
 						continue
 					else:
-						print('\033[1m' + lab_str + '\033[0m')
+						print(('\033[1m' + lab_str + '\033[0m'))
 				else:
 					date_str = ''
 					val_str = ''
@@ -492,30 +492,30 @@ class ExtractFilingData:
 							val_str += base[rk]['val'][bk].encode('utf-8')
 						val_str += '\t\t'
 					print(lab_str)
-					print(tab_str + '\t' + date_str)
-					print(tab_str + '\t' + val_str)
+					print((tab_str + '\t' + date_str))
+					print((tab_str + '\t' + val_str))
 			except KeyError:
 				pass
 			if len(base[rk]['sub']) > 0:
 				rk_base = base[rk]['sub']
-				rk_base_keys = rk_base.keys()
+				rk_base_keys = list(rk_base.keys())
 				self.traverse_print_tree(rk_base, rk_base_keys, tabs=tabs+1)
 				
 	def traverse_tree(self, base):
 		base_tree = base['tree']
-		role_keys = base_tree.keys()
+		role_keys = list(base_tree.keys())
 		self.traverse_print_tree(base_tree, role_keys)
 	
 	def traverse_all_trees(self):
 		base = self.data['pre']['roles']
-		base_keys = base.keys()
+		base_keys = list(base.keys())
 		for bk in base_keys:
 			self.traverse_tree(base[bk])
 				
 	def find_fact_in_role(self, cat, fact):
 		"""Returns list of roles with fact in them."""
 		
-		all_role_keys = self.data[cat]['roles'].keys()
+		all_role_keys = list(self.data[cat]['roles'].keys())
 		roles_with_fact = []
 		for i in all_role_keys:
 			base = self.data[cat]['roles'][i]['unique']
@@ -528,9 +528,9 @@ class ExtractFilingData:
 	def find_pfx_in_ins(self, fact):
 		"""Returns pfx of fact in ins given no prefix."""
 		
-		ins_keys = self.data['ins']['facts'].keys()
+		ins_keys = list(self.data['ins']['facts'].keys())
 		for ik in ins_keys:
-			base = self.data['ins']['facts'][ik].keys()
+			base = list(self.data['ins']['facts'][ik].keys())
 			for b in base:
 				if b == fact.lower():
 					return ik
@@ -621,7 +621,7 @@ class ExtractFilingData:
 	def make_pfx(self, prfx, ins):
 		"""Make the prefix subcategories."""
 		
-		if prfx not in self.data[ins]['facts'].keys():
+		if prfx not in list(self.data[ins]['facts'].keys()):
 			self.data[ins]['facts'][prfx] = OrderedDict()
 			
 	def pop_ins_t(self, ctx_ref, pfx, name, dates, val, decimals):
@@ -642,7 +642,7 @@ class ExtractFilingData:
 			pfx = self.get_pfx(tmp)
 			name = self.get_name(tmp)
 			long_name = None
-			for i in tmp.attrs.keys():
+			for i in list(tmp.attrs.keys()):
 				if tmp[i] == '':
 					long_name = i
 			if long_name:
@@ -720,7 +720,7 @@ class ExtractFilingData:
 			master['val_by_date'][i[0]].append((i[1], i[2], i[3], i[4]))
 		tmp_master = []
 		tmp_dates = []
-		for i in master['val_by_date'].keys():
+		for i in list(master['val_by_date'].keys()):
 			if master['val_by_date'][i] not in tmp_master:
 				tmp_master.append(master['val_by_date'][i])
 				tmp_dates.append(i)
@@ -755,13 +755,13 @@ class ExtractFilingData:
 		"""Build instance reference with dates in descending order."""
 		
 		self.data['ins']['facts'] = OrderedDict()
-		pfx_keys = self.data['ins_t']['facts'].keys()
+		pfx_keys = list(self.data['ins_t']['facts'].keys())
 		for pfx in pfx_keys:
 			self.make_pfx(pfx, 'ins')
-			name_keys = self.data['ins_t']['facts'][pfx].keys()
+			name_keys = list(self.data['ins_t']['facts'][pfx].keys())
 			for name in name_keys:
 				self.data['ins']['facts'][pfx][name] = OrderedDict()
-				ctx_keys = self.data['ins_t']['facts'][pfx][name].keys()
+				ctx_keys = list(self.data['ins_t']['facts'][pfx][name].keys())
 				unsorted_ctx = []
 				ctx_exmem = []
 				for ctx in ctx_keys:
@@ -1096,7 +1096,7 @@ class ExtractFilingData:
 					except KeyError:
 						continue
 			root_val = OrderedDict()
-			tr_keys = tmp_root.keys()
+			tr_keys = list(tmp_root.keys())
 			tmp_ctx_list = []
 			for trk in tr_keys:
 				tmps_val = tmp_root[trk]
@@ -1353,7 +1353,7 @@ class ExtractFilingData:
 			if len(label) > 1:
 				label_list = []
 				try:
-					label_keys = label.keys()
+					label_keys = list(label.keys())
 					for k in label_keys:
 						if label[k] not in label_list:
 							label_list.append(label[k])
@@ -1367,7 +1367,7 @@ class ExtractFilingData:
 					except KeyError:
 						label = label['label']
 			else:
-				label_keys = label.keys()
+				label_keys = list(label.keys())
 				label = label[label_keys[0]]
 			self.data['pre']['roles'][role_name]['tree'][i[1]]['label'] = label
 		for i in to_list:
@@ -1377,7 +1377,7 @@ class ExtractFilingData:
 				self.data['no_lineage'].append(i)
 				continue
 			line_root = None
-			ins_keys = self.data['ins']['facts'].keys()
+			ins_keys = list(self.data['ins']['facts'].keys())
 			for ik in ins_keys:
 				found_lr = False
 				for l in line:
@@ -1394,7 +1394,7 @@ class ExtractFilingData:
 			try:
 				tmp_root = self.data['ins']['facts'][line_root[0]][line_root[1].lower()]['val_by_date']
 				root_val = OrderedDict()
-				tr_keys = tmp_root.keys()
+				tr_keys = list(tmp_root.keys())
 				tmp_ctx_list = []
 				for trk in tr_keys:
 					tmps_val = tmp_root[trk]
@@ -1439,7 +1439,7 @@ class ExtractFilingData:
 				except TypeError:
 					label = label
 			else:
-				label_keys = label.keys()
+				label_keys = list(label.keys())
 				label = label[label_keys[0]]
 			self.gen_dict_path('pre', line, role_name, i[0], (i[2], val, label))
 			try:
@@ -1458,7 +1458,7 @@ class ExtractFilingData:
 				except TypeError:
 					label = label
 			else:
-				label_keys = label.keys()
+				label_keys = list(label.keys())
 				label = label[label_keys[0]]
 			self.gen_dict_path('pre', line, role_name, i[0], label)
 			
@@ -1482,4 +1482,5 @@ class ExtractFilingData:
 			if len(locs) == 0:
 				locs = tmp.find_all(name=re.compile('loc'))
 			self.make_pre_tree(arcs, locs, role, title)
+
 

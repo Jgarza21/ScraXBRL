@@ -80,14 +80,15 @@ GET_XL = False
 #####################
 ## Extract Options ##
 #####################
-OUTPUT_PICKLE = True
-OUTPUT_JSON = False
+OUTPUT_PICKLE = False
+OUTPUT_JSON = True
 
 ###########
 ## URLs ###
 ###########
 
 LINK_URL = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={0}&type={1}&dateb=&owner=exclude&count=100"
+
 
 
 

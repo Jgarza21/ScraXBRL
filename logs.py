@@ -61,3 +61,4 @@ def check_if_extracted(symbol, date):
 		return True
 	return False
 
+
